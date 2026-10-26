@@ -198,6 +198,37 @@
             text-shadow: 1px 1px 0px #FFE082;
         }
 
+        /* Reveal Answer Section */
+        .reveal-box {
+            margin: 15px 0;
+        }
+
+        .reveal-btn {
+            background-color: #7B1FA2;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #4A148C;
+            transition: all 0.1s ease;
+        }
+        .reveal-btn:hover { background-color: #8E24AA; }
+
+        .hidden-answer {
+            font-size: 2rem;
+            color: #2E7D32;
+            font-weight: bold;
+            margin: 10px 0;
+            display: none;
+            background: #E8F5E9;
+            padding: 10px;
+            border-radius: 12px;
+            border: 2px dashed #81C784;
+        }
+
         .group-grading-container {
             background: #FFF;
             padding: 20px;
@@ -206,49 +237,30 @@
             margin-top: 15px;
         }
 
-        .group-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #F1F8E9;
-            padding: 10px 15px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-            border: 2px solid #C8E6C9;
+        .group-award-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 15px;
         }
 
-        .group-row span {
-            font-size: 1.1rem;
+        .award-btn {
+            background: #E1F5FE;
+            border: 3px solid #0288D1;
+            border-radius: 12px;
+            padding: 15px 10px;
+            font-size: 1rem;
             font-weight: bold;
-            color: #2E7D32;
-        }
-
-        .group-btns {
-            display: flex;
-            gap: 10px;
-        }
-
-        .group-point-btn {
-            padding: 6px 14px;
-            font-size: 0.95rem;
-            font-weight: bold;
-            border-radius: 8px;
-            border: none;
+            color: #01579B;
             cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transition: all 0.2s ease;
         }
 
-        .group-point-btn.yes {
-            background-color: #66BB6A;
-            color: white;
+        .award-btn:hover {
+            background: #B3E5FC;
+            transform: scale(1.03);
         }
-        .group-point-btn.yes:hover { background-color: #4CAF50; }
-
-        .group-point-btn.no {
-            background-color: #E0E0E0;
-            color: #616161;
-        }
-        .group-point-btn.no:hover { background-color: #BDBDBD; }
 
         .next-word-btn {
             background-color: #0288D1;
@@ -259,7 +271,7 @@
             font-weight: bold;
             border-radius: 30px;
             cursor: pointer;
-            margin-top: 15px;
+            margin-top: 20px;
             box-shadow: 0 4px 0 #01579B;
         }
         .next-word-btn:hover { background-color: #039BE5; }
@@ -286,10 +298,8 @@
         }
 
         @media (max-width: 600px) {
-            .comparison-board, .teams-score-board, .group-row {
+            .comparison-board, .teams-score-board, .group-award-grid {
                 grid-template-columns: 1fr;
-                flex-direction: column;
-                gap: 8px;
             }
         }
 
@@ -421,8 +431,8 @@
                 <ol>
                     <li>Divide the class into three groups.</li>
                     <li>Display one word on the screen.</li>
-                    <li>All three groups answer together simultaneously.</li>
-                    <li>Award points to any group that gets the correct answer!</li>
+                    <li>Let students answer, then click "Reveal Answer" to check!</li>
+                    <li>Click a group's button to add a point when they get it right.</li>
                 </ol>
             </div>
             <button class="btn" onclick="startShowdownGame()">Start Group Activity! 🚀</button>
@@ -433,7 +443,7 @@
             <button class="back-btn" onclick="goToMenu()">⬅ Return</button>
             <div class="game-header" style="clear: both;">
                 <span id="showdown-counter">Word 1 of 8</span>
-                <span style="color: #D84315; font-weight: bold;">👥 All Three Groups Answer Together</span>
+                <span style="color: #D84315; font-weight: bold;">👥 Three Groups Activity</span>
             </div>
 
             <div class="showdown-arena">
@@ -446,31 +456,18 @@
                 <p style="font-size: 0.95rem; color: #546E7A;">What is the opposite of:</p>
                 <div id="showdown-word" class="showdown-word-display">SOFT</div>
 
+                <div class="reveal-box">
+                    <button class="reveal-btn" onclick="revealAnswer()">🔍 Reveal Answer</button>
+                    <div id="hidden-answer-display" class="hidden-answer">HARD</div>
+                </div>
+
                 <div class="group-grading-container">
-                    <p style="font-size: 0.95rem; color: #78909C; margin-bottom: 12px;">Target Opposite Answer: <b id="target-answer-display" style="color: #0277BD; text-transform: uppercase;"></b></p>
+                    <p style="font-size: 1rem; color: #37474F; margin-bottom: 5px;">Award +1 point to any group that answered correctly:</p>
                     
-                    <div class="group-row">
-                        <span>Group 1 Answered Correctly?</span>
-                        <div class="group-btns">
-                            <button id="g1-yes" class="group-point-btn yes" onclick="setGroupPoint(0, true)">Yes (+1)</button>
-                            <button id="g1-no" class="group-point-btn no" onclick="setGroupPoint(0, false)">No (0)</button>
-                        </div>
-                    </div>
-
-                    <div class="group-row">
-                        <span>Group 2 Answered Correctly?</span>
-                        <div class="group-btns">
-                            <button id="g2-yes" class="group-point-btn yes" onclick="setGroupPoint(1, true)">Yes (+1)</button>
-                            <button id="g2-no" class="group-point-btn no" onclick="setGroupPoint(1, false)">No (0)</button>
-                        </div>
-                    </div>
-
-                    <div class="group-row">
-                        <span>Group 3 Answered Correctly?</span>
-                        <div class="group-btns">
-                            <button id="g3-yes" class="group-point-btn yes" onclick="setGroupPoint(2, true)">Yes (+1)</button>
-                            <button id="g3-no" class="group-point-btn no" onclick="setGroupPoint(2, false)">No (0)</button>
-                        </div>
+                    <div class="group-award-grid">
+                        <button class="award-btn" onclick="awardPoint(0)">🏆 Give Team 1 Point</button>
+                        <button class="award-btn" onclick="awardPoint(1)">🏆 Give Team 2 Point</button>
+                        <button class="award-btn" onclick="awardPoint(2)">🏆 Give Team 3 Point</button>
                     </div>
 
                     <button class="next-word-btn" onclick="nextGroupWord()">Next Word ➡️</button>
@@ -537,7 +534,6 @@
 
         let currentShowdownIdx = 0;
         let teamScores = [0, 0, 0];
-        let teamRoundStatus = [false, false, false]; // Tracks if each group is awarded for current word
 
         const soloQuestions = [
             { level: "Beginner 🌱", wordA: "HOT", emojiA: "🔥☀️", descA: "Basking in the summer sun!", wordB: "COLD", emojiB: "❄️☃️", descB: "Shivering in winter snow!", correct: "COLD", options: ["COLD", "LOUD", "FAST"] },
@@ -578,60 +574,30 @@
 
         function loadShowdownWord() {
             document.getElementById('showdown-feedback').innerHTML = "";
-            teamRoundStatus = [false, false, false];
-            updateGroupButtonsUI();
-
+            document.getElementById('hidden-answer-display').style.display = "none";
+            
             const item = showdownWords[currentShowdownIdx];
             document.getElementById('showdown-counter').innerText = `Word ${currentShowdownIdx + 1} of ${showdownWords.length}`;
             document.getElementById('showdown-word').innerText = item.word;
-            document.getElementById('target-answer-display').innerText = item.correct;
+            document.getElementById('hidden-answer-display').innerText = item.correct;
 
             for(let i=0; i<3; i++) {
                 document.getElementById(`t${i+1}-score`).innerText = teamScores[i];
             }
         }
 
-        function setGroupPoint(teamIndex, status) {
-            teamRoundStatus[teamIndex] = status;
-            updateGroupButtonsUI();
+        function revealAnswer() {
+            document.getElementById('hidden-answer-display').style.display = "block";
         }
 
-        function updateGroupButtonsUI() {
-            for(let i=0; i<3; i++) {
-                const yesBtn = document.getElementById(`g${i+1}-yes`);
-                const noBtn = document.getElementById(`g${i+1}-no`);
-                if(teamRoundStatus[i]) {
-                    yesBtn.style.opacity = "1";
-                    yesBtn.style.boxShadow = "0 0 8px #4CAF50";
-                    noBtn.style.opacity = "0.5";
-                    noBtn.style.boxShadow = "none";
-                } else {
-                    yesBtn.style.opacity = "0.5";
-                    yesBtn.style.boxShadow = "none";
-                    noBtn.style.opacity = "1";
-                    noBtn.style.boxShadow = "0 0 8px #9E9E9E";
-                }
-            }
+        function awardPoint(teamIndex) {
+            teamScores[teamIndex]++;
+            document.getElementById(`t${teamIndex+1}-score`).innerText = teamScores[teamIndex];
+            document.getElementById('showdown-feedback').innerHTML = `<span style="color: #2E7D32;">⭐ Team ${teamIndex + 1} gets +1 point!</span>`;
+            confetti({ particleCount: 30, spread: 50, origin: { y: 0.7 } });
         }
 
         function nextGroupWord() {
-            // Add scores based on selections
-            let awardedAny = false;
-            for(let i=0; i<3; i++) {
-                if(teamRoundStatus[i]) {
-                    teamScores[i]++;
-                    awardedAny = true;
-                }
-            }
-
-            for(let i=0; i<3; i++) {
-                document.getElementById(`t${i+1}-score`).innerText = teamScores[i];
-            }
-
-            if(awardedAny) {
-                confetti({ particleCount: 35, spread: 50, origin: { y: 0.6 } });
-            }
-
             currentShowdownIdx++;
             if (currentShowdownIdx < showdownWords.length) {
                 loadShowdownWord();
