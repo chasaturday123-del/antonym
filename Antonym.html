@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grade 2 Antonyms Classroom & Group Activity</title>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', sans-serif;
+        }
+
+        body {
+            background-image: url('Classroom.png');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            color: #37474F;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 820px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.96);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.3);
+            padding: 25px;
+            border: 5px solid #FF9800;
+            text-align: center;
+            position: relative;
+            backdrop-filter: blur(4px);
+        }
+
+        header h1 {
+            color: #D84315;
+            font-size: 2.1rem;
+            text-shadow: 1px 1px 0px #FFE082;
+            margin-bottom: 8px;
+        }
+
+        .badges-row {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .grade-badge {
+            background: #1976D2;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-weight: bold;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        }
+
+        .difficulty-badge {
+            background: #7B1FA2;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 1rem;
+            font-weight: bold;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        }
+
+        /* Screen Management */
+        .screen {
+            display: none;
+        }
+        .screen.active {
+            display: block;
+        }
+
+        /* Return / Back Button styling */
+        .back-btn {
+            background-color: #78909C;
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 0 #455A64;
+            margin-bottom: 15px;
+            float: left;
+            transition: all 0.1s ease;
+        }
+
+        .back-btn:hover {
+            background-color: #90A4AE;
+        }
+
+        .back-btn:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px 0 #455A64;
+        }
+
+        /* Slide / Instruction Cards */
+        .slide-card {
+            background: #1E1E1E;
+            color: #FFFFFF;
+            border-radius: 16px;
+            padding: 25px;
+            text-align: left;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            margin: 15px 0;
+            border: 3px solid #333;
+            clear: both;
+        }
+
+        .slide-card h2 {
+            color: #4FC3F7;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #444;
+            padding-bottom: 5px;
+        }
+
+        .slide-card h3 {
+            color: #FFEE58;
+            font-size: 1.1rem;
+            margin: 12px 0 6px 0;
+        }
+
+        .slide-card ol {
+            padding-left: 20px;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+
+        .btn {
+            background-color: #FF7043;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 0 #D84315, 0 8px 15px rgba(0,0,0,0.2);
+            transition: all 0.1s ease;
+            margin-top: 15px;
+            clear: both;
+        }
+
+        .btn:active {
+            transform: translateY(3px);
+            box-shadow: 0 2px 0 #D84315, 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .btn:hover {
+            background-color: #FF8A65;
+        }
+
+        /* Group Arena */
+        .showdown-arena {
+            background: linear-gradient(135deg, #FFF3E0 0%, #E0F7FA 100%);
+            border-radius: 16px;
+            padding: 20px;
+            border: 3px dashed #FFB74D;
+            margin: 15px 0;
+        }
+
+        .teams-score-board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .team-box {
+            background: white;
+            padding: 10px;
+            border-radius: 12px;
+            border: 3px solid #CFD8DC;
+            font-weight: bold;
+        }
+
+        .showdown-word-display {
+            font-size: 2.8rem;
+            color: #D84315;
+            font-weight: bold;
+            margin: 15px 0;
+            text-shadow: 1px 1px 0px #FFE082;
+        }
+
+        .group-grading-container {
+            background: #FFF;
+            padding: 20px;
+            border-radius: 14px;
+            border: 3px solid #29B6F6;
+            margin-top: 15px;
+        }
+
+        .group-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #F1F8E9;
+            padding: 10px 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 2px solid #C8E6C9;
+        }
+
+        .group-row span {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #2E7D32;
+        }
+
+        .group-btns {
+            display: flex;
+            gap: 10px;
+        }
+
+        .group-point-btn {
+            padding: 6px 14px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .group-point-btn.yes {
+            background-color: #66BB6A;
+            color: white;
+        }
+        .group-point-btn.yes:hover { background-color: #4CAF50; }
+
+        .group-point-btn.no {
+            background-color: #E0E0E0;
+            color: #616161;
+        }
+        .group-point-btn.no:hover { background-color: #BDBDBD; }
+
+        .next-word-btn {
+            background-color: #0288D1;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            margin-top: 15px;
+            box-shadow: 0 4px 0 #01579B;
+        }
+        .next-word-btn:hover { background-color: #039BE5; }
+
+        /* Main Game Screen Styles */
+        .game-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            background: #F1F8E9;
+            padding: 8px 15px;
+            border-radius: 10px;
+            border: 2px dashed #8BC34A;
+        }
+
+        .comparison-board {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        @media (max-width: 600px) {
+            .comparison-board, .teams-score-board, .group-row {
+                grid-template-columns: 1fr;
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+
+        .card-box {
+            background: #FFF;
+            border-radius: 16px;
+            padding: 20px;
+            border: 3px solid #CFD8DC;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+
+        .card-box.theme-1 {
+            background: linear-gradient(135deg, #FFF3E0 100%, #FFE0B2 0%);
+            border-color: #FFB74D;
+        }
+
+        .card-box.theme-2 {
+            background: linear-gradient(135deg, #E1F5FE 100%, #B3E5FC 0%);
+            border-color: #4FC3F7;
+        }
+
+        .card-title {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .theme-1 .card-title { color: #E65100; }
+        .theme-2 .card-title { color: #01579B; }
+
+        .card-emoji {
+            font-size: 3.2rem;
+            margin: 8px 0;
+        }
+
+        .options-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .option-btn {
+            background: #FFFFFF;
+            border: 3px solid #AB47BC;
+            border-radius: 14px;
+            padding: 12px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #6A1B9A;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+            transition: all 0.2s ease;
+        }
+
+        .option-btn:hover {
+            background: #F3E5F5;
+            transform: scale(1.03);
+        }
+
+        .option-btn.correct {
+            background: #81C784 !important;
+            border-color: #388E3C !important;
+            color: white !important;
+        }
+
+        .option-btn.wrong {
+            background: #E57373 !important;
+            border-color: #D32F2F !important;
+            color: white !important;
+        }
+
+        #feedback-banner {
+            margin-top: 15px;
+            font-size: 1.3rem;
+            font-weight: bold;
+            min-height: 35px;
+        }
+
+        /* Certificate Screen */
+        .certificate {
+            background: #FFFDE7;
+            border: 6px double #FBC02D;
+            border-radius: 16px;
+            padding: 25px;
+            margin: 15px 0;
+            box-shadow: inset 0 0 15px rgba(255,193,7,0.2);
+        }
+
+        .certificate h2 {
+            color: #F57F17;
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .score-display {
+            font-size: 2.2rem;
+            color: #E65100;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- WELCOME SCREEN -->
+        <div id="welcome-screen" class="screen active">
+            <div class="badges-row">
+                <span class="grade-badge">Grade 2 Classroom</span>
+                <span class="difficulty-badge">Group Activity & Quest</span>
+            </div>
+            <h1>✨ ANTONYMS: CLASSROOM ACTIVITIES ✨</h1>
+            <p style="font-size: 1.1rem; color: #546E7A; margin: 10px 0;">Choose your activity to get started!</p>
+            <div style="display: flex; gap: 15px; justify-content: center; flex-wrap: wrap; margin-top: 15px;">
+                <button class="btn" style="background-color: #7B1FA2;" onclick="startShowdownInstructions()">1. Group Activity 🏆</button>
+                <button class="btn" onclick="startSoloGame()">2. Individual Mastery Quest ⭐</button>
+            </div>
+        </div>
+
+        <!-- GROUP INSTRUCTION SCREEN -->
+        <div id="showdown-instruction-screen" class="screen">
+            <button class="back-btn" onclick="goToMenu()">⬅ Return</button>
+            <div class="slide-card">
+                <h2>Slide: Interactive Antonym Group Activity!</h2>
+                <p style="color: #B0BEC5; margin-bottom: 10px;"><b>Time:</b> 5 minutes</p>
+                
+                <h3>How to Play:</h3>
+                <ol>
+                    <li>Divide the class into three groups.</li>
+                    <li>Display one word on the screen.</li>
+                    <li>All three groups answer together simultaneously.</li>
+                    <li>Award points to any group that gets the correct answer!</li>
+                </ol>
+            </div>
+            <button class="btn" onclick="startShowdownGame()">Start Group Activity! 🚀</button>
+        </div>
+
+        <!-- GROUP GAME SCREEN -->
+        <div id="showdown-game-screen" class="screen">
+            <button class="back-btn" onclick="goToMenu()">⬅ Return</button>
+            <div class="game-header" style="clear: both;">
+                <span id="showdown-counter">Word 1 of 8</span>
+                <span style="color: #D84315; font-weight: bold;">👥 All Three Groups Answer Together</span>
+            </div>
+
+            <div class="showdown-arena">
+                <div class="teams-score-board">
+                    <div id="t1-box" class="team-box">Team 1<br><span id="t1-score">0</span> pts</div>
+                    <div id="t2-box" class="team-box">Team 2<br><span id="t2-score">0</span> pts</div>
+                    <div id="t3-box" class="team-box">Team 3<br><span id="t3-score">0</span> pts</div>
+                </div>
+                
+                <p style="font-size: 0.95rem; color: #546E7A;">What is the opposite of:</p>
+                <div id="showdown-word" class="showdown-word-display">SOFT</div>
+
+                <div class="group-grading-container">
+                    <p style="font-size: 0.95rem; color: #78909C; margin-bottom: 12px;">Target Opposite Answer: <b id="target-answer-display" style="color: #0277BD; text-transform: uppercase;"></b></p>
+                    
+                    <div class="group-row">
+                        <span>Group 1 Answered Correctly?</span>
+                        <div class="group-btns">
+                            <button id="g1-yes" class="group-point-btn yes" onclick="setGroupPoint(0, true)">Yes (+1)</button>
+                            <button id="g1-no" class="group-point-btn no" onclick="setGroupPoint(0, false)">No (0)</button>
+                        </div>
+                    </div>
+
+                    <div class="group-row">
+                        <span>Group 2 Answered Correctly?</span>
+                        <div class="group-btns">
+                            <button id="g2-yes" class="group-point-btn yes" onclick="setGroupPoint(1, true)">Yes (+1)</button>
+                            <button id="g2-no" class="group-point-btn no" onclick="setGroupPoint(1, false)">No (0)</button>
+                        </div>
+                    </div>
+
+                    <div class="group-row">
+                        <span>Group 3 Answered Correctly?</span>
+                        <div class="group-btns">
+                            <button id="g3-yes" class="group-point-btn yes" onclick="setGroupPoint(2, true)">Yes (+1)</button>
+                            <button id="g3-no" class="group-point-btn no" onclick="setGroupPoint(2, false)">No (0)</button>
+                        </div>
+                    </div>
+
+                    <button class="next-word-btn" onclick="nextGroupWord()">Next Word ➡️</button>
+                </div>
+            </div>
+            <div id="showdown-feedback" style="font-size: 1.1rem; font-weight: bold; min-height: 35px;"></div>
+        </div>
+
+        <!-- SOLO GAME SCREEN -->
+        <div id="game-screen" class="screen">
+            <button class="back-btn" onclick="goToMenu()">⬅ Return</button>
+            <div class="game-header" style="clear: both;">
+                <span id="question-counter">Question 1 of 10</span>
+                <span id="level-indicator" style="color: #7B1FA2;">Level: Beginner 🌱</span>
+                <span id="score-tracker">⭐ Score: 0</span>
+            </div>
+
+            <h2 style="font-size: 1.4rem; color: #0277BD; margin-bottom: 10px;">Find the Opposite!</h2>
+
+            <div class="comparison-board">
+                <div id="card-left" class="card-box theme-1">
+                    <div id="left-word" class="card-title">HOT</div>
+                    <div id="left-emoji" class="card-emoji">🔥☀️</div>
+                    <p id="left-desc" style="font-weight: bold; color: #E65100; font-size: 0.9rem;">Basking in summer sun!</p>
+                </div>
+                <div id="card-right" class="card-box theme-2">
+                    <div id="right-word" class="card-title">?</div>
+                    <div id="right-emoji" class="card-emoji">❄️☃️</div>
+                    <p id="right-desc" style="font-weight: bold; color: #01579B; font-size: 0.9rem;">What is the opposite?</p>
+                </div>
+            </div>
+
+            <div class="options-container" id="options-container"></div>
+            <div id="feedback-banner"></div>
+        </div>
+
+        <!-- CERTIFICATE SCREEN -->
+        <div id="certificate-screen" class="screen">
+            <button class="back-btn" onclick="goToMenu()">⬅ Return</button>
+            <div class="certificate" style="clear: both;">
+                <h2>🏆 Classroom Certificate of Excellence 🏆</h2>
+                <p>This proudly certifies completion of the Antonyms Mastery Quest!</p>
+                <div class="score-display" id="final-score">Score: 10 / 10</div>
+                <p id="achievement-title">🌟 Outstanding Antonym Superstars! 🌟</p>
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
+                <button class="btn" style="font-size: 1rem; padding: 10px 20px;" onclick="startShowdownInstructions()">Play Group Activity 🏆</button>
+                <button class="btn" style="font-size: 1rem; padding: 10px 20px;" onclick="startSoloGame()">Play Individual Quest ⭐</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const showdownWords = [
+            { word: "SOFT", correct: "HARD" },
+            { word: "EMPTY", correct: "FULL" },
+            { word: "EARLY", correct: "LATE" },
+            { word: "WEAK", correct: "STRONG" },
+            { word: "NOISY", correct: "QUIET" },
+            { word: "DIFFICULT", correct: "EASY" },
+            { word: "INSIDE", correct: "OUTSIDE" },
+            { word: "BEGIN", correct: "END" }
+        ];
+
+        let currentShowdownIdx = 0;
+        let teamScores = [0, 0, 0];
+        let teamRoundStatus = [false, false, false]; // Tracks if each group is awarded for current word
+
+        const soloQuestions = [
+            { level: "Beginner 🌱", wordA: "HOT", emojiA: "🔥☀️", descA: "Basking in the summer sun!", wordB: "COLD", emojiB: "❄️☃️", descB: "Shivering in winter snow!", correct: "COLD", options: ["COLD", "LOUD", "FAST"] },
+            { level: "Beginner 🌱", wordA: "BIG", emojiA: "🐘🏔️", descA: "A massive giant elephant!", wordB: "SMALL", emojiB: "🐭🐾", descB: "A tiny little mouse!", correct: "SMALL", options: ["TALL", "SMALL", "BRIGHT"] },
+            { level: "Beginner 🌱", wordA: "HAPPY", emojiA: "😊🎉", descA: "Smiling and joyful all day!", wordB: "SAD", emojiB: "😢🌧️", descB: "Frowning with teardrops!", correct: "SAD", options: ["HAPPY", "SAD", "SILLY"] },
+            { level: "Intermediate ⚡", wordA: "BRAVE", emojiA: "🦁🛡️", descA: "Facing fears with courage!", wordB: "COWARDLY", emojiB: "🐥💨", descB: "Hiding away from fear!", correct: "COWARDLY", options: ["TIMID", "COWARDLY", "LOUD"] },
+            { level: "Intermediate ⚡", wordA: "ANCIENT", emojiA: "🏛️📜", descA: "From thousands of years ago!", wordB: "MODERN", emojiB: "🏙️🚀", descB: "Brand new and contemporary!", correct: "MODERN", options: ["OLD", "MODERN", "FUTURE"] },
+            { level: "Intermediate ⚡", wordA: "GENEROUS", emojiA: "🎁🤝", descA: "Happy to share with everyone!", wordB: "SELFISH", emojiB: "🧁🔒", descB: "Keeping everything for oneself!", correct: "SELFISH", options: ["GREEDY", "SELFISH", "KIND"] },
+            { level: "Intermediate ⚡", wordA: "FIERCE", emojiA: "🐅⚡", descA: "Wild, strong, and ferocious!", wordB: "GENTLE", emojiB: "🐰🌸", descB: "Soft, calm, and tender!", correct: "GENTLE", options: ["TAME", "GENTLE", "QUIET"] },
+            { level: "Master Challenge 🔥", wordA: "TRANSPARENT", emojiA: "🔍🪟", descA: "Clear enough to see right through!", wordB: "OPAQUE", emojiB: "🧱🚪", descB: "Solid light cannot pass through!", correct: "OPAQUE", options: ["OPAQUE", "BLURRY", "DARK"] },
+            { level: "Master Challenge 🔥", wordA: "ARTIFICIAL", emojiA: "🤖🧪", descA: "Made by humans in a lab or factory!", wordB: "NATURAL", emojiB: "🌿🌲", descB: "Existing purely in nature!", correct: "NATURAL", options: ["REAL", "NATURAL", "ORIGINAL"] },
+            { level: "Master Challenge 🔥", wordA: "OPTIMISTIC", emojiA: "🌅✨", descA: "Always looking at the bright side!", wordB: "PESSIMISTIC", emojiB: "🌧️📉", descB: "Expecting the worst outcome!", correct: "PESSIMISTIC", options: ["GLOOMY", "PESSIMISTIC", "SAD"] }
+        ];
+
+        let soloIdx = 0;
+        let soloScore = 0;
+        let isAnswerLocked = false;
+
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(screenId).classList.add('active');
+        }
+
+        function goToMenu() {
+            showScreen('welcome-screen');
+        }
+
+        function startShowdownInstructions() {
+            showScreen('showdown-instruction-screen');
+        }
+
+        function startShowdownGame() {
+            currentShowdownIdx = 0;
+            teamScores = [0, 0, 0];
+            showScreen('showdown-game-screen');
+            loadShowdownWord();
+        }
+
+        function loadShowdownWord() {
+            document.getElementById('showdown-feedback').innerHTML = "";
+            teamRoundStatus = [false, false, false];
+            updateGroupButtonsUI();
+
+            const item = showdownWords[currentShowdownIdx];
+            document.getElementById('showdown-counter').innerText = `Word ${currentShowdownIdx + 1} of ${showdownWords.length}`;
+            document.getElementById('showdown-word').innerText = item.word;
+            document.getElementById('target-answer-display').innerText = item.correct;
+
+            for(let i=0; i<3; i++) {
+                document.getElementById(`t${i+1}-score`).innerText = teamScores[i];
+            }
+        }
+
+        function setGroupPoint(teamIndex, status) {
+            teamRoundStatus[teamIndex] = status;
+            updateGroupButtonsUI();
+        }
+
+        function updateGroupButtonsUI() {
+            for(let i=0; i<3; i++) {
+                const yesBtn = document.getElementById(`g${i+1}-yes`);
+                const noBtn = document.getElementById(`g${i+1}-no`);
+                if(teamRoundStatus[i]) {
+                    yesBtn.style.opacity = "1";
+                    yesBtn.style.boxShadow = "0 0 8px #4CAF50";
+                    noBtn.style.opacity = "0.5";
+                    noBtn.style.boxShadow = "none";
+                } else {
+                    yesBtn.style.opacity = "0.5";
+                    yesBtn.style.boxShadow = "none";
+                    noBtn.style.opacity = "1";
+                    noBtn.style.boxShadow = "0 0 8px #9E9E9E";
+                }
+            }
+        }
+
+        function nextGroupWord() {
+            // Add scores based on selections
+            let awardedAny = false;
+            for(let i=0; i<3; i++) {
+                if(teamRoundStatus[i]) {
+                    teamScores[i]++;
+                    awardedAny = true;
+                }
+            }
+
+            for(let i=0; i<3; i++) {
+                document.getElementById(`t${i+1}-score`).innerText = teamScores[i];
+            }
+
+            if(awardedAny) {
+                confetti({ particleCount: 35, spread: 50, origin: { y: 0.6 } });
+            }
+
+            currentShowdownIdx++;
+            if (currentShowdownIdx < showdownWords.length) {
+                loadShowdownWord();
+            } else {
+                showShowdownSummary();
+            }
+        }
+
+        function showShowdownSummary() {
+            let maxScore = Math.max(...teamScores);
+            let winners = [];
+            teamScores.forEach((s, idx) => { if(s === maxScore) winners.push(`Team ${idx + 1}`); });
+            
+            let winText = winners.length > 1 ? `It's a tie between ${winners.join(' and ')}!` : `🏆 Activity Winner: ${winners[0]}!`;
+            
+            document.getElementById('showdown-game-screen').innerHTML = `
+                <button class="back-btn" onclick="goToMenu()">⬅ Return</button>
+                <div class="slide-card" style="text-align: center; clear: both;">
+                    <h2 style="color: #81C784;">🏆 Group Activity Complete! 🏆</h2>
+                    <p style="font-size: 1.3rem; margin: 15px 0;">${winText}</p>
+                    <p style="font-size: 1.05rem; color: #E0F7FA;">Final Scores — Team 1: ${teamScores[0]} | Team 2: ${teamScores[1]} | Team 3: ${teamScores[2]}</p>
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
+                    <button class="btn" onclick="startSoloGame()">Proceed to Individual Quest ⭐</button>
+                    <button class="btn" style="background-color: #7B1FA2;" onclick="startShowdownGame()">Replay Group Activity 🔄</button>
+                </div>
+            `;
+            confetti({ particleCount: 140, spread: 100, origin: { y: 0.5 } });
+        }
+
+        function startSoloGame() {
+            soloIdx = 0;
+            soloScore = 0;
+            showScreen('game-screen');
+            loadSoloQuestion();
+        }
+
+        function loadSoloQuestion() {
+            isAnswerLocked = false;
+            document.getElementById('feedback-banner').innerHTML = "";
+            const q = soloQuestions[soloIdx];
+
+            document.getElementById('question-counter').innerText = `Question ${soloIdx + 1} of ${soloQuestions.length}`;
+            document.getElementById('level-indicator').innerText = `Level: ${q.level}`;
+            document.getElementById('score-tracker').innerText = `⭐ Score: ${soloScore}`;
+
+            document.getElementById('card-left').className = "card-box theme-1";
+            document.getElementById('left-word').innerText = q.wordA;
+            document.getElementById('left-emoji').innerText = q.emojiA;
+            document.getElementById('left-desc').innerText = q.descA;
+
+            document.getElementById('card-right').className = "card-box theme-2";
+            document.getElementById('right-word').innerText = "?";
+            document.getElementById('right-emoji').innerText = q.emojiB;
+            document.getElementById('right-desc').innerText = "Find the opposite!";
+
+            const container = document.getElementById('options-container');
+            container.innerHTML = "";
+            let shuffled = [...q.options].sort(() => Math.random() - 0.5);
+
+            shuffled.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => checkSoloAnswer(opt, q.correct, btn);
+                container.appendChild(btn);
+            });
+        }
+
+        function checkSoloAnswer(selected, correct, btn) {
+            if (isAnswerLocked) return;
+            isAnswerLocked = true;
+
+            const q = soloQuestions[soloIdx];
+            const feedback = document.getElementById('feedback-banner');
+            document.getElementById('right-word').innerText = q.correct;
+            document.getElementById('right-desc').innerText = q.descB;
+
+            const allBtns = document.querySelectorAll('#options-container .option-btn');
+
+            if (selected === correct) {
+                btn.classList.add('correct');
+                feedback.innerHTML = "<span style='color: #2E7D32;'>🎉 Brilliant! You nailed the opposite! 🌟</span>";
+                soloScore++;
+                document.getElementById('score-tracker').innerText = `⭐ Score: ${soloScore}`;
+                confetti({ particleCount: 45, spread: 60, origin: { y: 0.7 } });
+            } else {
+                btn.classList.add('wrong');
+                feedback.innerHTML = `<span style='color: #C62828;'>❌ Not quite! The opposite of ${q.wordA} is ${q.correct}.</span>`;
+                allBtns.forEach(b => { if(b.innerText === correct) b.classList.add('correct'); });
+            }
+
+            setTimeout(() => {
+                soloIdx++;
+                if (soloIdx < soloQuestions.length) {
+                    loadSoloQuestion();
+                } else {
+                    showCertificate();
+                }
+            }, 2200);
+        }
+
+        function showCertificate() {
+            showScreen('certificate-screen');
+            document.getElementById('final-score').innerText = `Score: ${soloScore} / ${soloQuestions.length}`;
+            confetti({ particleCount: 180, spread: 120, origin: { y: 0.6 } });
+        }
+    </script>
+</body>
+</html>
